@@ -23,35 +23,17 @@
                         name="search"
                         type="search"
                         placeholder="Here?"
+                        onchange="getCurrentWeatherInLocation(this.value)"
                     />
                 </div>
-                <h2 class="location">Location</h2>
+                <h2 id="currentLocation" class="location">Location</h2>
                 <div class="current_container">
-                    <p class="current_date">date</p>
-                    <div class="current_icon">Icon</div>
-                    <p class="current_temp">temp</p>
-                    <p class="current_condition">cond</p>
+                    <p id="currentDate" class="current_date">date</p>
+                    <img id="currentIcon" class="current_icon" src="#" />
+                    <p id="currentTemp" class="current_temp">temp</p>
+                    <p id="currentCondition" class="current_condition">cond</p>
                 </div>
-                <div class="forecast_container">
-                    <div class="next_days_container">
-                        <p class="next_days_date">date</p>
-                        <div class="next_days_icon">Icon</div>
-                        <p class="next_days_temp">temp</p>
-                        <p class="next_days_condition">cond</p>
-                    </div>
-                    <div class="next_days_container">
-                        <p class="next_days_date">date</p>
-                        <div class="next_days_icon">Icon</div>
-                        <p class="next_days_temp">temp</p>
-                        <p class="next_days_condition">cond</p>
-                    </div>
-                    <div class="next_days_container">
-                        <p class="next_days_date">date</p>
-                        <div class="next_days_icon">Icon</div>
-                        <p class="next_days_temp">temp</p>
-                        <p class="next_days_condition">cond</p>
-                    </div>
-                </div>
+                <div class="forecast_container"></div>
             </div>
         </main>
         <footer></footer>
