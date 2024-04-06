@@ -1,5 +1,2 @@
-// Load environment variables form .env file using dotenv
-require('dotenv').config()
+const WEATHER_API_KEY = '8c7f3fa8abbc4c0f8df135204240404';
 
-// Get the API key from the environment variable
-const apiKey = process.env.WEATHER_API_KEY
