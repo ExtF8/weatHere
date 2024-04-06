@@ -3,18 +3,57 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" type="text/css" href="reset.css" />
         <link rel="stylesheet" type="text/css" href="style.css" />
         <script src="script.js" defer></script>
         <title>WeatHere</title>
     </head>
     <body>
+        <header>
+            <div class="title_container">
+                <h1 class="app_title">WeatHere</h1>
+            </div>
+        </header>
         <main class="main_container">
             <div id="weatherData" class="weather_card">
-                <h1>WeatHere?</h1>
-                <h2>Current weather here in</h2>
-                <p>temp</p>
-                <p>cond</p>
+                <div class="search_container">
+                    <h2 class="app_sub_title">Weather where?</h2>
+                    <input
+                        id="search"
+                        name="search"
+                        type="search"
+                        placeholder="Here?"
+                    />
+                </div>
+                <h2 class="location">Location</h2>
+                <div class="current_container">
+                    <p class="current_date">date</p>
+                    <div class="current_icon">Icon</div>
+                    <p class="current_temp">temp</p>
+                    <p class="current_condition">cond</p>
+                </div>
+                <div class="forecast_container">
+                    <div class="next_days_container">
+                        <p class="next_days_date">date</p>
+                        <div class="next_days_icon">Icon</div>
+                        <p class="next_days_temp">temp</p>
+                        <p class="next_days_condition">cond</p>
+                    </div>
+                    <div class="next_days_container">
+                        <p class="next_days_date">date</p>
+                        <div class="next_days_icon">Icon</div>
+                        <p class="next_days_temp">temp</p>
+                        <p class="next_days_condition">cond</p>
+                    </div>
+                    <div class="next_days_container">
+                        <p class="next_days_date">date</p>
+                        <div class="next_days_icon">Icon</div>
+                        <p class="next_days_temp">temp</p>
+                        <p class="next_days_condition">cond</p>
+                    </div>
+                </div>
             </div>
         </main>
+        <footer></footer>
     </body>
 </html>
