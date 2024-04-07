@@ -6,36 +6,68 @@
         <link rel="stylesheet" type="text/css" href="reset.css" />
         <link rel="stylesheet" type="text/css" href="style.css" />
         <script src="script.js" defer></script>
+
         <title>WeatHere</title>
     </head>
     <body>
-        <header>
-            <div class="title_container">
-                <h1 class="app_title">WeatHere</h1>
-            </div>
-        </header>
-        <main class="main_container">
-            <div id="weatherData" class="weather_card">
-                <div class="search_container">
-                    <h2 class="app_sub_title">Weather where?</h2>
-                    <input
-                        id="search"
-                        name="search"
-                        type="search"
-                        placeholder="Here?"
-                        onchange="getCurrentWeatherInLocation(this.value)"
-                    />
+        <div id="content">
+            <header>
+                <div class="title_container">
+                    <h1 class="app_title">WeatHere</h1>
                 </div>
-                <h2 id="currentLocation" class="location">Location</h2>
-                <div class="current_container">
-                    <p id="currentDate" class="current_date">date</p>
-                    <img id="currentIcon" class="current_icon" src="#" />
-                    <p id="currentTemp" class="current_temp">temp</p>
-                    <p id="currentCondition" class="current_condition">cond</p>
+            </header>
+            <main class="main_container">
+                <div id="weatherData" class="weather_card">
+                    <div class="search_container">
+                        <h2 class="app_sub_title">Weather where?</h2>
+                        <input
+                            id="search"
+                            name="search"
+                            type="search"
+                            placeholder="Here?"
+                            onchange="getWeatherData(this.value)"
+                        />
+                    </div>
+                    <h2 id="currentLocation" class="location">Location</h2>
+                    <div class="current_container">
+                        <p id="currentDate" class="current_date">date</p>
+                        <img id="currentIcon" class="current_icon" src="#" />
+                        <p id="currentTemp" class="current_temp">temp</p>
+                        <p id="currentCondition" class="current_condition">
+                            cond
+                        </p>
+                    </div>
+                    <div class="forecast_container"></div>
                 </div>
-                <div class="forecast_container"></div>
-            </div>
-        </main>
-        <footer></footer>
+            </main>
+            <footer id="footer">
+                <div class="footer_container">
+                    <ul class="footer_ul">
+                        <li class="footer_li">
+                            <a
+                                href="https://github.com/ExtF8"
+                                target="_blank"
+                                class="footer_link"
+                                >Who Made This Web Page</a
+                            >
+                        </li>
+                        <li class="footer_li">
+                            <a
+                                href="https://www.theodinproject.com/lessons/node-path-javascript-weather-app"
+                                target="_blank"
+                                class="footer_link"
+                                >And Why</a
+                            >
+                        </li>
+                        <li class="footer_li">
+                            <a href="#" target="_top" class="footer_link"
+                                >Three looks better than two</a
+                            >
+                        </li>
+                    </ul>
+                    <span class="footer_copyright">© 2024 Copyright</span>
+                </div>
+            </footer>
+        </div>
     </body>
 </html>
