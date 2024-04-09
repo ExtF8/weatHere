@@ -4,60 +4,61 @@ const API_URL = (city) => {
     return `http://api.weatherapi.com/v1/forecast.json?key=${WEATHER_API_KEY}&q=${city}&days=4`;
 };
 
-function setDefaultLocation(location) {
-    if (!location || location.trim() === '') {
-        return 'London';
-    }
+const defaultLocation = 'London';
 
-    return location;
+async function fetchApi(location) {
+    const response = await fetch(API_URL(location), {
+        origin: 'cors',
+    });
+    return response;
 }
 
-async function getCurrentWeatherInLocation() {
+
+async function getWeatherData() {
+    let currentLocation = document.getElementById('search').value;
+    let response;
+    if (currentLocation.length == 0) {
+        currentLocation = defaultLocation;
+    }
+
     try {
-        let currentLocation = document.getElementById('search').value;
-        currentLocation = setDefaultLocation(currentLocation);
-
-        const response = await fetch(API_URL(currentLocation), {
-            origin: 'cors',
-        });
-
-        if (!response.ok) {
-            throw new Error('Network error');
-        }
-
-        const responseData = await response.json();
-
-        await getValuesForCurrentDay(responseData);
-
-        await getValuesForForecastDays(responseData);
+        response = await fetchApi(currentLocation);
     } catch (error) {
         console.error('Error fetching weather data: ', error);
     }
-}
 
-async function getValuesForCurrentDay(data) {
-    try {
-        const currentLocationName = await data.location.name;
-        const currentLocalTime = await data.location.localtime;
-        const currentIcon = await data.current.condition.icon;
-        const currentTempInCelsius = await data.current.temp_c.toString();
-        const currentCondition = await data.current.condition.text;
-
-        const currentForecastData = {
-            name: currentLocationName,
-            time: currentLocalTime,
-            icon: currentIcon,
-            temperature: currentTempInCelsius,
-            condition: currentCondition,
-        };
-
-        updateUiCurrentForecast(currentForecastData);
-    } catch (error) {
-        console.error('Error getting values for current location: ', error);
+    if (!response.ok) {
+        document.getElementById('search').value = '';
+        wrongLocationErrorHandler();
+        response = await fetchApi(defaultLocation);
     }
+
+    const responseData = await response.json();
+
+    extractValuesForCurrent(responseData);
+
+    extractValuesForForecast(responseData);
 }
 
-function updateUiCurrentForecast(currentForecastData) {
+function extractValuesForCurrent(data) {
+    const currentLocationName = data.location.name;
+    const currentLocalTime = data.location.localtime;
+    const currentIcon = data.current.condition.icon;
+    const currentTempInCelsius = data.current.temp_c;
+    const currentCondition = data.current.condition.text;
+
+    const currentForecastData = {
+        name: currentLocationName,
+        time: currentLocalTime,
+        icon: currentIcon,
+        temperature: currentTempInCelsius,
+        condition: currentCondition,
+    };
+
+    updateCurrentUI(currentForecastData);
+}
+
+function updateCurrentUI(currentForecastData) {
     const locationName = document.getElementById('currentLocation');
     const localTime = document.getElementById('currentDate');
     const localIcon = document.getElementById('currentIcon');
@@ -71,52 +72,70 @@ function updateUiCurrentForecast(currentForecastData) {
     localCondition.innerText = currentForecastData.condition;
 }
 
-async function getValuesForForecastDays(data) {
-    try {
-        const forecastData = data.forecast.forecastday;
-        // Array to accumulate forecast data
-        const nextDaysForecastData = [];
+function extractValuesForForecast(data) {
+    // Array to accumulate forecast data
+    const nextDaysForecastData = [];
+    const forecastData = data.forecast.forecastday;
 
-        for (let i = 1; i < forecastData.length; i++) {
-            const nextDayTime = forecastData[i].date;
-            const nextDayIcon = forecastData[i].day.condition.icon;
-            const nextDayTempInCelsius =
-                forecastData[i].day.avgtemp_c.toString();
-            const nextDayCondition = forecastData[i].day.condition.text;
+    for (let i = 1; i < forecastData.length; i++) {
+        const nextDayTime = forecastData[i].date;
+        const nextDayIcon = forecastData[i].day.condition.icon;
+        const nextDayTempInCelsius = forecastData[i].day.avgtemp_c;
+        const nextDayCondition = forecastData[i].day.condition.text;
 
-            // Push the forecast data for next day into the array
-            nextDaysForecastData.push({
-                time: nextDayTime,
-                icon: nextDayIcon,
-                temperature: nextDayTempInCelsius,
-                condition: nextDayCondition,
-            });
-
-            updateUiForNextForecast(nextDaysForecastData);
-        }
-    } catch (error) {
-        console.error('Error getting values for current location: ', error);
+        // Push the forecast data for next day into the array
+        nextDaysForecastData.push({
+            time: nextDayTime,
+            icon: nextDayIcon,
+            temperature: nextDayTempInCelsius,
+            condition: nextDayCondition,
+        });
     }
+
+    updateForecastUI(nextDaysForecastData);
 }
 
-function updateUiForNextForecast(forecastData) {
+function updateForecastUI(forecastData) {
     const forecastContainer = document.querySelector('.forecast_container');
 
     forecastContainer.innerHTML = '';
 
     forecastData.forEach((data) => {
-        const nextDaysContainer = document.createElement('div');
-        nextDaysContainer.classList.add('next_days_container');
-
-        nextDaysContainer.innerHTML = `
-        <p class='next_days_date'>${data.time}</p>
-        <img class='next_days_icon' src=${data.icon} />
-        <p class='next_days_temp'>${data.temperature}</p>
-        <p class='next_days_condition'>${data.condition}</p>
-        `;
-
-        forecastContainer.appendChild(nextDaysContainer);
+        const forecastCard = createForecastCard(data);
+        forecastContainer.appendChild(forecastCard);
     });
 }
 
-getCurrentWeatherInLocation();
+function createForecastCard(data) {
+    const nextDaysContainer = document.createElement('div');
+    nextDaysContainer.classList.add('next_days_container');
+
+    const timeParagraph = document.createElement('p');
+    timeParagraph.classList.add('next_days_date');
+    timeParagraph.innerText = data.time;
+
+    const forecastImg = document.createElement('img');
+    forecastImg.classList.add('next_days_icon');
+    forecastImg.src = data.icon;
+
+    const tempParagraph = document.createElement('p');
+    tempParagraph.classList.add('next_days_temp');
+    tempParagraph.innerText = data.temperature;
+
+    const conditionParagraph = document.createElement('p');
+    conditionParagraph.classList.add('next_days_condition');
+    conditionParagraph.innerText = data.condition;
+
+    nextDaysContainer.appendChild(timeParagraph);
+    nextDaysContainer.appendChild(forecastImg);
+    nextDaysContainer.appendChild(tempParagraph);
+    nextDaysContainer.appendChild(conditionParagraph);
+
+    return nextDaysContainer;
+}
+
+function wrongLocationErrorHandler() {
+    return alert('Enter correct city name');
+}
+
+getWeatherData();
