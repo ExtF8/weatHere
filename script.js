@@ -5,6 +5,7 @@ const API_URL = (city) => {
 };
 
 const defaultLocation = 'London';
+const unicodeDegreesSymbol = '\u00B0';
 
 async function fetchApi(location) {
     const response = await fetch(API_URL(location), {
@@ -13,9 +14,8 @@ async function fetchApi(location) {
     return response;
 }
 
-
 async function getWeatherData() {
-    let currentLocation = document.getElementById('search').value;
+    let currentLocation = document.getElementById('searchBox').value;
     let response;
     if (currentLocation.length == 0) {
         currentLocation = defaultLocation;
@@ -34,7 +34,7 @@ async function getWeatherData() {
     }
 
     const responseData = await response.json();
-
+    console.log(responseData);
     extractValuesForCurrent(responseData);
 
     extractValuesForForecast(responseData);
@@ -68,7 +68,8 @@ function updateCurrentUI(currentForecastData) {
     locationName.innerText = currentForecastData.name;
     localTime.innerText = currentForecastData.time;
     localIcon.src = currentForecastData.icon;
-    localTempInC.innerText = currentForecastData.temperature;
+    localTempInC.innerText =
+        currentForecastData.temperature + unicodeDegreesSymbol;
     localCondition.innerText = currentForecastData.condition;
 }
 
@@ -120,7 +121,8 @@ function createForecastCard(data) {
 
     const tempParagraph = document.createElement('p');
     tempParagraph.classList.add('next_days_temp');
-    tempParagraph.innerText = data.temperature;
+    tempParagraph.innerText =
+        'Avg ' + data.temperature + unicodeDegreesSymbol;
 
     const conditionParagraph = document.createElement('p');
     conditionParagraph.classList.add('next_days_condition');
