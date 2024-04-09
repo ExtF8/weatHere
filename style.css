@@ -5,8 +5,9 @@
     --light: #35d7ff;
     --accent: #ff6a3e;
     --sunny: #f7f339;
-    --clouds: #afaeb1;
+    --clouds: #939496;
     --rain: #5387e1;
+    --snow: #ffffff;
     --bodyTextColorWhite: #fafbfc;
     --bodyTextColorGray: #313131;
     --error: #e82e00;
@@ -119,10 +120,6 @@ header {
     border: solid 2px black;
     border-radius: 10px;
     width: 300px;
-    /* max-width: 20%; */
-    /* min-width: 60%; */
-    height: 300px;
-
     display: flex;
     flex-direction: column;
     gap: 4px;
@@ -276,7 +273,7 @@ header {
     border-color: var(--sunny);
 }
 
-.cloudy {
+.clouds {
     border-color: var(--clouds);
 }
 
@@ -284,6 +281,14 @@ header {
     border-color: var(--rain);
 }
 
+.snow {
+    border-color: var(--snow);
+}
+
 .error {
     border-color: var(--error);
+}
+
+.default {
+    border-color: black;
 }
