@@ -1,7 +1,7 @@
 const WEATHER_API_KEY = '8c7f3fa8abbc4c0f8df135204240404';
 
 const API_URL = (city) => {
-    return `http://api.weatherapi.com/v1/forecast.json?key=${WEATHER_API_KEY}&q=${city}&days=4`;
+    return `https://api.weatherapi.com/v1/forecast.json?key=${WEATHER_API_KEY}&q=${city}&days=4`;
 };
 
 const defaultLocation = 'London';
