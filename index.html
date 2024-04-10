@@ -20,22 +20,25 @@
                 <div id="weatherData" class="weather_card">
                     <div class="search_container">
                         <h2 class="app_sub_title">Weather where?</h2>
-                        <input
-                            id="searchBox"
-                            name="search"
-                            type="search"
-                            placeholder="Here?"
-                            onchange="getWeatherData(this.value)"
-                        />
+                        <div>
+                            <input
+                                id="searchBox"
+                                name="search"
+                                type="search"
+                                placeholder="Here?"
+                                class="search_box"
+                            />
+                            <p id="errorText" class="error_text">
+                                Oops! City not found. Try another.
+                            </p>
+                        </div>
                     </div>
-                    <h2 id="currentLocation" class="location">Location</h2>
+                    <h2 id="currentLocation" class="location"></h2>
                     <div class="current_container">
-                        <p id="currentDate" class="current_date">date</p>
+                        <p id="currentDate" class="current_date"></p>
                         <img id="currentIcon" class="current_icon" src="#" />
-                        <p id="currentTemp" class="current_temp">temp</p>
-                        <p id="currentCondition" class="current_condition">
-                            cond
-                        </p>
+                        <p id="currentTemp" class="current_temp"></p>
+                        <p id="currentCondition" class="current_condition"></p>
                     </div>
                     <div class="forecast_container"></div>
                 </div>
