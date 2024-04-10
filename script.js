@@ -1,11 +1,17 @@
 const WEATHER_API_KEY = '8c7f3fa8abbc4c0f8df135204240404';
 
 const API_URL = (city) => {
-    return `http://api.weatherapi.com/v1/forecast.json?key=${WEATHER_API_KEY}&q=${city}&days=4`;
+    return `https://api.weatherapi.com/v1/forecast.json?key=${WEATHER_API_KEY}&q=${city}&days=4`;
 };
 
-const defaultLocation = 'London';
-const unicodeDegreesSymbol = '\u00B0';
+const DEFAULT_LOCATION = 'London';
+const UNICODE_DEGREES_SYMBOL = '\u00B0';
+const JSON_FILE_URL = 'conditionCodeToClass.json';
+
+document.getElementById('searchBox').addEventListener('change', function () {
+    clearErrorValuesHandler();
+    getWeatherData();
+});
 
 async function fetchApi(location) {
     const response = await fetch(API_URL(location), {
@@ -17,8 +23,9 @@ async function fetchApi(location) {
 async function getWeatherData() {
     let currentLocation = document.getElementById('searchBox').value;
     let response;
+
     if (currentLocation.length == 0) {
-        currentLocation = defaultLocation;
+        currentLocation = DEFAULT_LOCATION;
     }
 
     try {
@@ -28,9 +35,7 @@ async function getWeatherData() {
     }
 
     if (!response.ok) {
-        document.getElementById('search').value = '';
         wrongLocationErrorHandler();
-        response = await fetchApi(defaultLocation);
     }
 
     const responseData = await response.json();
@@ -71,10 +76,14 @@ function updateCurrentUI(currentData) {
     locationName.innerText = currentData.name;
     localTime.innerText = currentData.time;
     localIcon.src = currentData.icon;
-    localTempInC.innerText = currentData.temperature + unicodeDegreesSymbol;
+    localTempInC.innerText = currentData.temperature + UNICODE_DEGREES_SYMBOL;
     localCondition.innerText = currentData.condition;
 
-    updateBorderColor(currentData.conditionCode, currentContainer);
+    updateBorderColor(
+        currentData.conditionCode,
+        currentContainer,
+        currentData.condition
+    );
 }
 
 function extractValuesForForecast(data) {
@@ -111,7 +120,7 @@ function updateForecastUI(forecastData) {
         const forecastCard = createForecastCard(data);
         forecastContainer.appendChild(forecastCard);
 
-        updateBorderColor(data.conditionCode, forecastCard);
+        updateBorderColor(data.conditionCode, forecastCard, data.condition);
     });
 }
 
@@ -129,7 +138,8 @@ function createForecastCard(data) {
 
     const tempParagraph = document.createElement('p');
     tempParagraph.classList.add('next_days_temp');
-    tempParagraph.innerText = 'Avg ' + data.temperature + unicodeDegreesSymbol;
+    tempParagraph.innerText =
+        'Avg ' + data.temperature + UNICODE_DEGREES_SYMBOL;
 
     const conditionParagraph = document.createElement('p');
     conditionParagraph.classList.add('next_days_condition');
@@ -143,68 +153,51 @@ function createForecastCard(data) {
     return nextDaysContainer;
 }
 
-function updateBorderColor(conditionCode, container) {
-    container.classList.remove('sunny', 'clouds', 'rain', 'snow');
+async function fetchJsonFile(url) {
+    let response;
 
-    const cssClass = conditionCodeToClass[conditionCode];
-    if (cssClass) {
-        container.classList.add(cssClass);
+    try {
+        response = await fetch(url);
+    } catch (error) {
+        console.error('Error fetching json file: ', error);
+    }
+    const responseData = await response.json();
+
+    return responseData;
+}
+
+async function updateBorderColor(conditionCode, container, condition) {
+    try {
+        const conditionCodeToClass = await fetchJsonFile(JSON_FILE_URL);
+
+        container.classList.remove('sunny', 'clouds', 'rain', 'snow', 'clear');
+
+        const cssClass = conditionCodeToClass[conditionCode];
+
+        if (condition == 'Clear') {
+            container.classList.add('clear');
+        } else if (cssClass) {
+            container.classList.add(cssClass);
+        }
+    } catch (error) {
+        console.error('Error fetching or processing JSON file:', error);
     }
 }
 
-const conditionCodeToClass = {
-    1000: 'sunny',
-    1003: 'clouds',
-    1006: 'clouds',
-    1009: 'clouds',
-    1030: 'clouds',
-    1063: 'rain',
-    1066: 'snow',
-    1069: 'snow',
-    1072: 'rain',
-    1087: 'rain',
-    1114: 'snow',
-    1117: 'snow',
-    1135: 'clouds',
-    1147: 'clouds',
-    1150: 'rain',
-    1153: 'rain',
-    1168: 'rain',
-    1171: 'rain',
-    1180: 'rain',
-    1183: 'rain',
-    1186: 'rain',
-    1189: 'rain',
-    1192: 'rain',
-    1195: 'rain',
-    1198: 'rain',
-    1201: 'rain',
-    1204: 'snow',
-    1207: 'snow',
-    1210: 'snow',
-    1213: 'snow',
-    1216: 'snow',
-    1219: 'snow',
-    1222: 'snow',
-    1225: 'snow',
-    1237: 'snow',
-    1240: 'rain',
-    1243: 'rain',
-    1246: 'rain',
-    1249: 'rain',
-    1252: 'snow',
-    1255: 'snow',
-    1258: 'snow',
-    1261: 'snow',
-    1264: 'snow',
-    1273: 'rain',
-    1276: 'rain',
-    1279: 'snow',
-    1282: 'snow',
-};
-
 function wrongLocationErrorHandler() {
-    return alert('Enter correct city name');
+    const searchBox = document.getElementById('searchBox');
+    const errorText = document.getElementById('errorText');
+
+    searchBox.classList.add('error');
+    errorText.style.visibility = 'visible';
+}
+
+function clearErrorValuesHandler() {
+    const searchBox = document.getElementById('searchBox');
+    const errorText = document.getElementById('errorText');
+
+    searchBox.classList.remove('error');
+    errorText.style.visibility = 'hidden';
 }
 
 getWeatherData();

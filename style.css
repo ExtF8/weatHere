@@ -8,6 +8,7 @@
     --clouds: #939496;
     --rain: #5387e1;
     --snow: #ffffff;
+    --clear:#87CEEB;
     --bodyTextColorWhite: #fafbfc;
     --bodyTextColorGray: #313131;
     --error: #e82e00;
@@ -18,10 +19,6 @@
 }
 
 body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
     font-size: var(--bodyFontSize);
     color: var(--bodyTextColorWhite);
 }
@@ -71,29 +68,23 @@ header {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 100%;
     position: relative;
     margin-bottom: 2vh;
 }
 
 .weather_card {
-
-    min-width: 22%;
-    /* height: 700px; */
-    min-height: 200px;
-
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-evenly;
-    gap: 10px;
+    gap: 1.2rem;
 }
 
 .search_container {
     display: flex;
     flex-direction: column;
     width: 100%;
-    /* max-width: 50%; */
+    margin-block: 2rem;
     height: 5em;
     gap: 1rem;
     padding-block: 1rem;
@@ -101,13 +92,17 @@ header {
     justify-content: center;
 }
 
-#searchBox {
+.search_container>div{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.search_box {
     border: solid 2px #2596b2;
     border-radius: 10px;
     padding: 3px;
     padding-inline: 6px;
-    width: 200px;
-    height: 30px;
     font-size: var(--bodyFontSize);
 }
 
@@ -119,13 +114,18 @@ header {
 .next_days_container {
     border: solid 2px black;
     border-radius: 10px;
-    width: 300px;
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    padding: 0.6rem;
+    gap: 1rem;
+    padding: 0.8rem;
     justify-content: space-evenly;
     align-items: center;
+}
+
+.current_container {
+    width: 18rem;
+    height: max-content;
+    margin-bottom: 1.1rem;
 }
 
 .current_temp,
@@ -135,13 +135,10 @@ header {
 }
 
 .forecast_container {
-
     display: flex;
     justify-content: space-evenly;
-    gap: 6px;
+    gap: 1rem;
     align-items: center;
-
-    /* max-width: 80%; */
 }
 
 .current_icon {
@@ -155,8 +152,8 @@ header {
 }
 
 .next_days_container {
-    width: 140px;
-    height: 180px;
+    width: 14rem;
+    height: 14rem;
 }
 
 
@@ -285,8 +282,20 @@ header {
     border-color: var(--snow);
 }
 
+.clear {
+    border-color: var(--clear);
+}
+
 .error {
     border-color: var(--error);
+}
+
+.error_text {
+    visibility: hidden;
+    text-align: center;
+    padding-top: 6px;
+    font-size: 0.9rem;
+    color: var(--error);
 }
 
 .default {
