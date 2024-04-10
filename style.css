@@ -8,6 +8,7 @@
     --clouds: #939496;
     --rain: #5387e1;
     --snow: #ffffff;
+    --clear:#87CEEB;
     --bodyTextColorWhite: #fafbfc;
     --bodyTextColorGray: #313131;
     --error: #e82e00;
@@ -279,6 +280,10 @@ header {
 
 .snow {
     border-color: var(--snow);
+}
+
+.clear {
+    border-color: var(--clear);
 }
 
 .error {
