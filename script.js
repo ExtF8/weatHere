@@ -4,8 +4,8 @@ const API_URL = (city) => {
     return `https://api.weatherapi.com/v1/forecast.json?key=${WEATHER_API_KEY}&q=${city}&days=4`;
 };
 
-const defaultLocation = 'London';
-const unicodeDegreesSymbol = '\u00B0';
+const DEFAULT_LOCATION = 'London';
+const UNICODE_DEGREES_SYMBOL = '\u00B0';
 
 async function fetchApi(location) {
     const response = await fetch(API_URL(location), {
@@ -18,7 +18,7 @@ async function getWeatherData() {
     let currentLocation = document.getElementById('searchBox').value;
     let response;
     if (currentLocation.length == 0) {
-        currentLocation = defaultLocation;
+        currentLocation = DEFAULT_LOCATION;
     }
 
     try {
@@ -30,7 +30,7 @@ async function getWeatherData() {
     if (!response.ok) {
         document.getElementById('search').value = '';
         wrongLocationErrorHandler();
-        response = await fetchApi(defaultLocation);
+        response = await fetchApi(DEFAULT_LOCATION);
     }
 
     const responseData = await response.json();
@@ -71,7 +71,7 @@ function updateCurrentUI(currentData) {
     locationName.innerText = currentData.name;
     localTime.innerText = currentData.time;
     localIcon.src = currentData.icon;
-    localTempInC.innerText = currentData.temperature + unicodeDegreesSymbol;
+    localTempInC.innerText = currentData.temperature + UNICODE_DEGREES_SYMBOL;
     localCondition.innerText = currentData.condition;
 
     updateBorderColor(currentData.conditionCode, currentContainer);
@@ -129,7 +129,7 @@ function createForecastCard(data) {
 
     const tempParagraph = document.createElement('p');
     tempParagraph.classList.add('next_days_temp');
-    tempParagraph.innerText = 'Avg ' + data.temperature + unicodeDegreesSymbol;
+    tempParagraph.innerText = 'Avg ' + data.temperature + UNICODE_DEGREES_SYMBOL;
 
     const conditionParagraph = document.createElement('p');
     conditionParagraph.classList.add('next_days_condition');
