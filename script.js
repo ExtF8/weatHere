@@ -21,6 +21,7 @@ async function fetchApi(location) {
 }
 
 async function getWeatherData() {
+    showLoadingAnimation();
     let currentLocation = document.getElementById('searchBox').value;
     let response;
 
@@ -43,6 +44,8 @@ async function getWeatherData() {
     extractValuesForCurrent(responseData);
 
     extractValuesForForecast(responseData);
+
+    hideLoadingAnimation();
 }
 
 function extractValuesForCurrent(data) {
@@ -182,6 +185,26 @@ async function updateBorderColor(conditionCode, container, condition) {
     } catch (error) {
         console.error('Error fetching or processing JSON file:', error);
     }
+}
+
+function showLoadingAnimation() {
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    const currentContainer = document.querySelector('.current_container');
+    const forecastContainer = document.querySelector('.forecast_container');
+
+    currentContainer.style.display = 'none';
+    forecastContainer.style.display = 'none';
+    loadingIndicator.style.display = 'block';
+}
+
+function hideLoadingAnimation() {
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    const currentContainer = document.querySelector('.current_container');
+    const forecastContainer = document.querySelector('.forecast_container');
+
+    currentContainer.style.display = 'flex';
+    forecastContainer.style.display = 'flex';
+    loadingIndicator.style.display = 'none';
 }
 
 function wrongLocationErrorHandler() {
