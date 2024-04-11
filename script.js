@@ -189,20 +189,20 @@ async function updateBorderColor(conditionCode, container, condition) {
 
 function showLoadingAnimation() {
     const loadingIndicator = document.getElementById('loadingIndicator');
-    const currentContainer = document.querySelector('.current_container');
+    const cardContainer = document.getElementById('weatherCardContainer');
     const forecastContainer = document.querySelector('.forecast_container');
 
-    currentContainer.style.display = 'none';
+    cardContainer.style.display = 'none';
     forecastContainer.style.display = 'none';
     loadingIndicator.style.display = 'block';
 }
 
 function hideLoadingAnimation() {
     const loadingIndicator = document.getElementById('loadingIndicator');
-    const currentContainer = document.querySelector('.current_container');
+    const cardContainer = document.getElementById('weatherCardContainer');
     const forecastContainer = document.querySelector('.forecast_container');
 
-    currentContainer.style.display = 'flex';
+    cardContainer.style.display = 'block';
     forecastContainer.style.display = 'flex';
     loadingIndicator.style.display = 'none';
 }
