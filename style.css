@@ -127,18 +127,37 @@ header {
     padding: 0.8rem;
     justify-content: space-evenly;
     align-items: center;
-}
-
-.current_container {
     width: 18rem;
-    height: 22rem;
+    height: fit-content;
     margin-bottom: 1.1rem;
 }
 
-.current_temp,
-.current_condition,
-.current_date {
+.temperature_container_forecast {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+}
+
+.current {
     font-size: 1.4rem;
+}
+
+#currentTemp {
+    font-size: 4rem;
+}
+
+.current_icon {
+    width: 180px;
+    height: 180px;
+}
+
+.wind_container {
+    display: inherit;
+    gap: 1rem;
+}
+
+.wind_container>* {
+    font-size: 1rem;
 }
 
 .forecast_container {
@@ -148,10 +167,6 @@ header {
     align-items: center;
 }
 
-.current_icon {
-    width: 180px;
-    height: 180px;
-}
 
 .next_days_icon {
     width: 90px;
@@ -160,7 +175,7 @@ header {
 
 .next_days_container {
     width: 14rem;
-    height: 14rem;
+    height: auto;
 }
 
 
