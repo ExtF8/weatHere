@@ -1,7 +1,7 @@
 # WeatHere?
 
 ## Introduction
-This project is part of [The Odin Project](https://www.theodinproject.com/lessons/node-path-javascript-weather-app target="_blank") and it focuses on creating a weather forecast application that utilizes the WeatherAPI to provide accurate weather information for specified locations.
+This project is part of [The Odin Project](https://www.theodinproject.com/lessons/node-path-javascript-weather-app){:target="_blank"} and it focuses on creating a weather forecast application that utilizes the WeatherAPI to provide accurate weather information for specified locations.
 
 ## Features
 - View current weather information, including temperature, condition, wind direction, and speed.
