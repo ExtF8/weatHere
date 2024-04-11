@@ -7,6 +7,10 @@ const API_URL = (city) => {
 const DEFAULT_LOCATION = 'London';
 const UNICODE_DEGREES_SYMBOL = '\u00B0';
 const JSON_FILE_URL = 'conditionCodeToClass.json';
+const HIGH_TEMP_STRING = 'H: ';
+const LOW_TEMP_STRING = 'L: ';
+const WIND_STRING = 'Wind: ';
+const WIND_SPEED_KPH = ' km/h';
 
 document.getElementById('searchBox').addEventListener('change', function () {
     clearErrorValuesHandler();
@@ -50,37 +54,47 @@ async function getWeatherData() {
 
 function extractValuesForCurrent(data) {
     const currentLocationName = data.location.name;
-    const currentLocalTime = data.location.localtime;
+    const currentLocalTime = new Date(data.location.localtime);
     const currentIcon = data.current.condition.icon;
     const currentTempInCelsius = data.current.temp_c;
     const currentCondition = data.current.condition.text;
     const conditionCode = data.current.condition.code;
+    const windDirection = data.current.wind_dir;
+    const windSpeedKph = data.current.wind_kph;
+
+    const formattedDate = formatDate(currentLocalTime, (includeTime = true));
 
     const currentData = {
         name: currentLocationName,
-        time: currentLocalTime,
+        time: formattedDate,
         icon: currentIcon,
         temperature: currentTempInCelsius,
         condition: currentCondition,
         conditionCode: conditionCode,
+        windDirection: windDirection,
+        windSpeedKph: windSpeedKph,
     };
 
     updateCurrentUI(currentData);
 }
 
 function updateCurrentUI(currentData) {
+    const currentContainer = document.querySelector('.current_container');
     const locationName = document.getElementById('currentLocation');
     const localTime = document.getElementById('currentDate');
     const localIcon = document.getElementById('currentIcon');
     const localTempInC = document.getElementById('currentTemp');
     const localCondition = document.getElementById('currentCondition');
-    const currentContainer = document.querySelector('.current_container');
+    const windDirection = document.getElementById('windDirection');
+    const windSpeedKph = document.getElementById('windSpeed');
 
     locationName.innerText = currentData.name;
     localTime.innerText = currentData.time;
     localIcon.src = currentData.icon;
     localTempInC.innerText = currentData.temperature + UNICODE_DEGREES_SYMBOL;
     localCondition.innerText = currentData.condition;
+    windDirection.innerText = WIND_STRING + currentData.windDirection;
+    windSpeedKph.innerText = currentData.windSpeedKph + WIND_SPEED_KPH;
 
     updateBorderColor(
         currentData.conditionCode,
@@ -95,19 +109,24 @@ function extractValuesForForecast(data) {
     const forecastData = data.forecast.forecastday;
 
     for (let i = 1; i < forecastData.length; i++) {
-        const nextDayTime = forecastData[i].date;
+        const nextDayTime = new Date(forecastData[i].date);
         const nextDayIcon = forecastData[i].day.condition.icon;
-        const nextDayTempInCelsius = forecastData[i].day.avgtemp_c;
+        const nextDayHighTempInCelsius = forecastData[i].day.maxtemp_c;
+        const nextDayLowTempInCelsius = forecastData[i].day.mintemp_c;
         const nextDayCondition = forecastData[i].day.condition.text;
         const nextDayConditionCode = forecastData[i].day.condition.code;
+        const nextDayMaxWind = forecastData[i].day.maxwind_kph;
+        const formattedDate = formatDate(nextDayTime, (includeTime = false));
 
         // Push the forecast data for next day into the array
         nextDaysForecastData.push({
-            time: nextDayTime,
+            time: formattedDate,
             icon: nextDayIcon,
-            temperature: nextDayTempInCelsius,
+            temperatureHigh: nextDayHighTempInCelsius,
+            temperatureLow: nextDayLowTempInCelsius,
             condition: nextDayCondition,
             conditionCode: nextDayConditionCode,
+            maxWindSpeed: nextDayMaxWind,
         });
     }
 
@@ -129,29 +148,42 @@ function updateForecastUI(forecastData) {
 
 function createForecastCard(data) {
     const nextDaysContainer = document.createElement('div');
-    nextDaysContainer.classList.add('next_days_container');
-
     const timeParagraph = document.createElement('p');
-    timeParagraph.classList.add('next_days_date');
-    timeParagraph.innerText = data.time;
-
     const forecastImg = document.createElement('img');
-    forecastImg.classList.add('next_days_icon');
-    forecastImg.src = data.icon;
-
-    const tempParagraph = document.createElement('p');
-    tempParagraph.classList.add('next_days_temp');
-    tempParagraph.innerText =
-        'Avg ' + data.temperature + UNICODE_DEGREES_SYMBOL;
-
+    const tempContainer = document.createElement('div');
+    const highTempParagraph = document.createElement('p');
+    const lowTempParagraph = document.createElement('p');
     const conditionParagraph = document.createElement('p');
+    const windContainer = document.createElement('div');
+    const maxWindSpeed = document.createElement('p');
+
+    nextDaysContainer.classList.add('next_days_container');
+    timeParagraph.classList.add('next_days_date');
+    forecastImg.classList.add('next_days_icon');
+    tempContainer.classList.add('temperature_container_forecast');
+    highTempParagraph.classList.add('next_days_temp');
+    lowTempParagraph.classList.add('next_days_temp');
     conditionParagraph.classList.add('next_days_condition');
+    windContainer.classList.add('wind_container');
+
+    timeParagraph.innerText = data.time;
+    forecastImg.src = data.icon;
+    highTempParagraph.innerText =
+        HIGH_TEMP_STRING + data.temperatureHigh + UNICODE_DEGREES_SYMBOL;
+    lowTempParagraph.innerText =
+        LOW_TEMP_STRING + data.temperatureLow + UNICODE_DEGREES_SYMBOL;
     conditionParagraph.innerText = data.condition;
+    maxWindSpeed.innerText = WIND_STRING + data.maxWindSpeed + WIND_SPEED_KPH;
+
+    tempContainer.appendChild(highTempParagraph);
+    tempContainer.appendChild(lowTempParagraph);
+    windContainer.appendChild(maxWindSpeed);
 
     nextDaysContainer.appendChild(timeParagraph);
     nextDaysContainer.appendChild(forecastImg);
-    nextDaysContainer.appendChild(tempParagraph);
+    nextDaysContainer.appendChild(tempContainer);
     nextDaysContainer.appendChild(conditionParagraph);
+    nextDaysContainer.appendChild(windContainer);
 
     return nextDaysContainer;
 }
@@ -170,20 +202,31 @@ async function fetchJsonFile(url) {
 }
 
 async function updateBorderColor(conditionCode, container, condition) {
-    try {
-        const conditionCodeToClass = await fetchJsonFile(JSON_FILE_URL);
+    const conditionCodeToClass = await fetchJsonFile(JSON_FILE_URL);
 
-        container.classList.remove('sunny', 'clouds', 'rain', 'snow', 'clear');
+    container.classList.remove('sunny', 'clouds', 'rain', 'snow', 'clear');
 
-        const cssClass = conditionCodeToClass[conditionCode];
+    const cssClass = conditionCodeToClass[conditionCode];
 
-        if (condition == 'Clear') {
-            container.classList.add('clear');
-        } else if (cssClass) {
-            container.classList.add(cssClass);
-        }
-    } catch (error) {
-        console.error('Error fetching or processing JSON file:', error);
+    if (condition == 'Clear') {
+        container.classList.add('clear');
+    } else if (cssClass) {
+        container.classList.add(cssClass);
+    }
+}
+
+function formatDate(date, includeTime = true) {
+    if (includeTime) {
+        return date.toLocaleString('en-EU', {
+            weekday: 'long',
+            hour: 'numeric',
+            minute: 'numeric',
+            hour12: false,
+        });
+    } else {
+        return date.toLocaleString('en-EU', {
+            weekday: 'long',
+        });
     }
 }
 
