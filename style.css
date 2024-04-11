@@ -10,6 +10,7 @@
     --snow: #ffffff;
     --clear: #87CEEB;
     --loader: #046D8B;
+    --borderDefault: #131313;
     --bodyTextColorWhite: #fafbfc;
     --bodyTextColorGray: #313131;
     --error: #e82e00;
@@ -116,7 +117,7 @@ header {
 .next_days_container {
     transition: all 0.3s ease-in;
 
-    border: solid 2px black;
+    border: solid 2px var(--borderDefault);
     border-radius: 10px;
     display: flex;
     flex-direction: column;
@@ -294,6 +295,10 @@ header {
     border-color: var(--error);
 }
 
+.default {
+    border-color: var(--borderDefault);
+}
+
 .error_text {
     visibility: hidden;
     text-align: center;
@@ -302,9 +307,6 @@ header {
     color: var(--error);
 }
 
-.default {
-    border-color: black;
-}
 
 #loadingIndicator {
     width: auto;
