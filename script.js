@@ -83,7 +83,9 @@ document.getElementById('searchBox').addEventListener('change', function () {
 /**
  * Fetches the weather data from the API.
  *
- * @returns { Promise<Response> } The API response.
+ * @param { string } location - The location for which to fetch weather data.
+ * @returns { Promise<Response> } A Promise that resolves with the API response.
+ * @throws { Error } If there is an error fetching the data.
  */
 async function fetchApi(location) {
     const response = await fetch(API_URL(location), {
@@ -93,8 +95,9 @@ async function fetchApi(location) {
 }
 
 /**
- * Retrieves and updates the weather data.
+ * Retrieves and updates the weather data based on the user's input location.
  *
+ * @throws {Error} If there is an error fetching the data or if the response is not successful.
  */
 async function getWeatherData() {
     showLoadingAnimation();
@@ -223,7 +226,7 @@ function extractValuesForForecast(data) {
 /**
  * Updates the UI with the forecast weather data.
  *
- * @param { Array } forecastData - The forecast weather data.
+ * @param { Array<Object> } forecastData - An array of forecast weather data objects.
  */
 function updateForecastUI(forecastData) {
     const forecastContainer = document.querySelector('.forecast_container');
@@ -292,7 +295,8 @@ function createForecastCard(data) {
  * Fetches a JSON file from the given URL.
  *
  * @param { string } url - The URL of the JSON file.
- * @returns { Promise<Object> } The parsed JSON data.
+ * @returns { Promise<Object> } A Promise that resolves with the parsed JSON data.
+ * @throws { Error } If there is an error fetching or parsing the JSON file.
  */
 async function fetchJsonFile(url) {
     let response;
@@ -332,7 +336,7 @@ async function updateBorderColor(conditionCode, container, condition) {
  * Formats a date object into a string.
  *
  * @param { Date } date - The date object to format.
- * @param { boolean } includeTime - Whether to include the time in the formatted string.
+ * @param { boolean } [includeTime=true] - Whether to include the time in the formatted string.
  * @returns { string } The formatted date string.
  */
 function formatDate(date, includeTime = true) {
