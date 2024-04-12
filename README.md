@@ -13,6 +13,8 @@ This project is part of [The Odin Project](https://www.theodinproject.com/lesson
 - HTML
 - CSS
 - JavaScript (ES6)
+- WeatherAPI
+- JSON for condition code to CSS class mappings
 
 ## Live Demo
 You can view a live demo of the project [here](https://extf8.github.io/weatHere/).
