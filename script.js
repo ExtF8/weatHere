@@ -10,7 +10,8 @@ const JSON_FILE_URL = 'conditionCodeToClass.json';
 const HIGH_TEMP_STRING = 'H: ';
 const LOW_TEMP_STRING = 'L: ';
 const WIND_STRING = 'Wind: ';
-const WIND_SPEED_KPH = ' km/h';
+const WIND_SPEED_MPS = ' m/s';
+const KPH_IN_MPS = 3.6;
 
 document.getElementById('searchBox').addEventListener('change', function () {
     clearErrorValuesHandler();
@@ -60,7 +61,7 @@ function extractValuesForCurrent(data) {
     const currentCondition = data.current.condition.text;
     const conditionCode = data.current.condition.code;
     const windDirection = data.current.wind_dir;
-    const windSpeedKph = data.current.wind_kph;
+    const windSpeedKph = convertKMHtoMS(data.current.wind_kph);
 
     const formattedDate = formatDate(currentLocalTime, (includeTime = true));
 
@@ -94,7 +95,7 @@ function updateCurrentUI(currentData) {
     localTempInC.innerText = currentData.temperature + UNICODE_DEGREES_SYMBOL;
     localCondition.innerText = currentData.condition;
     windDirection.innerText = WIND_STRING + currentData.windDirection;
-    windSpeedKph.innerText = currentData.windSpeedKph + WIND_SPEED_KPH;
+    windSpeedKph.innerText = currentData.windSpeedKph + WIND_SPEED_MPS;
 
     updateBorderColor(
         currentData.conditionCode,
@@ -166,6 +167,8 @@ function createForecastCard(data) {
     conditionParagraph.classList.add('next_days_condition');
     windContainer.classList.add('wind_container');
 
+    let windSpeed = convertKMHtoMS(data.maxWindSpeed);
+
     timeParagraph.innerText = data.time;
     forecastImg.src = data.icon;
     highTempParagraph.innerText =
@@ -173,7 +176,7 @@ function createForecastCard(data) {
     lowTempParagraph.innerText =
         LOW_TEMP_STRING + data.temperatureLow + UNICODE_DEGREES_SYMBOL;
     conditionParagraph.innerText = data.condition;
-    maxWindSpeed.innerText = WIND_STRING + data.maxWindSpeed + WIND_SPEED_KPH;
+    maxWindSpeed.innerText = WIND_STRING + windSpeed + WIND_SPEED_MPS;
 
     tempContainer.appendChild(highTempParagraph);
     tempContainer.appendChild(lowTempParagraph);
@@ -228,6 +231,11 @@ function formatDate(date, includeTime = true) {
             weekday: 'long',
         });
     }
+}
+
+function convertKMHtoMS(kph) {
+    const metersPerSecond = (kph / KPH_IN_MPS).toFixed(0);
+    return metersPerSecond;
 }
 
 function showLoadingAnimation() {
