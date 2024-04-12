@@ -1,23 +1,90 @@
+/**
+ * Weather API key.
+ *
+ * @type { string }
+ */
 const WEATHER_API_KEY = '8c7f3fa8abbc4c0f8df135204240404';
 
+/**
+ * Function to generate the API URL based on the city.
+ *
+ * @param { string } city - The city for which to fetch weather data.
+ * @returns { string } The API URL.
+ */
 const API_URL = (city) => {
     return `https://api.weatherapi.com/v1/forecast.json?key=${WEATHER_API_KEY}&q=${city}&days=4`;
 };
 
+/**
+ * Default location if no location is provided.
+ *
+ * @type { string }
+ */
 const DEFAULT_LOCATION = 'London';
+
+/**
+ * Unicode symbol for degrees.
+ *
+ * @type { string }
+ */
 const UNICODE_DEGREES_SYMBOL = '\u00B0';
+
+/**
+ * URL of the JSON file containing condition code to CSS class mappings.
+ *
+ * @type { string }
+ */
 const JSON_FILE_URL = 'conditionCodeToClass.json';
+
+/**
+ * String prefix for high temperature.
+ *
+ * @type { string }
+ */
 const HIGH_TEMP_STRING = 'H: ';
+
+/**
+ * String prefix for low temperature.
+ *
+ * @type { string }
+ */
 const LOW_TEMP_STRING = 'L: ';
+
+/**
+ * String prefix for wind.
+ *
+ * @type { string }
+ */
 const WIND_STRING = 'Wind: ';
+
+/**
+ * String suffix for wind speed in meters per second.
+ *
+ * @type { string }
+ */
 const WIND_SPEED_MPS = ' m/s';
+
+/**
+ * Conversion factor from kilometers per hour to meters per second.
+ *
+ * @type { number }
+ */
 const KPH_IN_MPS = 3.6;
 
+/**
+ * Event listener for the search box change event.
+ *
+ */
 document.getElementById('searchBox').addEventListener('change', function () {
     clearErrorValuesHandler();
     getWeatherData();
 });
 
+/**
+ * Fetches the weather data from the API.
+ *
+ * @returns { Promise<Response> } The API response.
+ */
 async function fetchApi(location) {
     const response = await fetch(API_URL(location), {
         origin: 'cors',
@@ -25,6 +92,10 @@ async function fetchApi(location) {
     return response;
 }
 
+/**
+ * Retrieves and updates the weather data.
+ *
+ */
 async function getWeatherData() {
     showLoadingAnimation();
     let currentLocation = document.getElementById('searchBox').value;
@@ -53,6 +124,11 @@ async function getWeatherData() {
     hideLoadingAnimation();
 }
 
+/**
+ * Extracts the current weather values from the API response.
+ *
+ * @param { Object } data - The API response data.
+ */
 function extractValuesForCurrent(data) {
     const currentLocationName = data.location.name;
     const currentLocalTime = new Date(data.location.localtime);
@@ -79,6 +155,11 @@ function extractValuesForCurrent(data) {
     updateCurrentUI(currentData);
 }
 
+/**
+ * Updates the UI with the current weather data.
+ *
+ * @param { Object } currentData - The current weather data.
+ */
 function updateCurrentUI(currentData) {
     const currentContainer = document.querySelector('.current_container');
     const locationName = document.getElementById('currentLocation');
@@ -104,6 +185,11 @@ function updateCurrentUI(currentData) {
     );
 }
 
+/**
+ * Extracts the forecast weather values from the API response.
+ *
+ * @param { Object } data - The API response data.
+ */
 function extractValuesForForecast(data) {
     // Array to accumulate forecast data
     const nextDaysForecastData = [];
@@ -134,6 +220,11 @@ function extractValuesForForecast(data) {
     updateForecastUI(nextDaysForecastData);
 }
 
+/**
+ * Updates the UI with the forecast weather data.
+ *
+ * @param { Array } forecastData - The forecast weather data.
+ */
 function updateForecastUI(forecastData) {
     const forecastContainer = document.querySelector('.forecast_container');
 
@@ -147,6 +238,12 @@ function updateForecastUI(forecastData) {
     });
 }
 
+/**
+ * Creates a forecast card element.
+ *
+ * @param { Object } data - The forecast weather data.
+ * @returns { HTMLElement } The forecast card element.
+ */
 function createForecastCard(data) {
     const nextDaysContainer = document.createElement('div');
     const timeParagraph = document.createElement('p');
@@ -191,6 +288,12 @@ function createForecastCard(data) {
     return nextDaysContainer;
 }
 
+/**
+ * Fetches a JSON file from the given URL.
+ *
+ * @param { string } url - The URL of the JSON file.
+ * @returns { Promise<Object> } The parsed JSON data.
+ */
 async function fetchJsonFile(url) {
     let response;
 
@@ -204,6 +307,13 @@ async function fetchJsonFile(url) {
     return responseData;
 }
 
+/**
+ * Updates the border color of a container based on the condition code or weather condition.
+ * If the weather condition is clear during nighttime, the container border will be set to 'clear'.
+ * @param { string } conditionCode - The condition code.
+ * @param { HTMLElement } container - The container element.
+ * @param { string } condition - The condition.
+ */
 async function updateBorderColor(conditionCode, container, condition) {
     const conditionCodeToClass = await fetchJsonFile(JSON_FILE_URL);
 
@@ -218,6 +328,13 @@ async function updateBorderColor(conditionCode, container, condition) {
     }
 }
 
+/**
+ * Formats a date object into a string.
+ *
+ * @param { Date } date - The date object to format.
+ * @param { boolean } includeTime - Whether to include the time in the formatted string.
+ * @returns { string } The formatted date string.
+ */
 function formatDate(date, includeTime = true) {
     if (includeTime) {
         return date.toLocaleString('en-EU', {
@@ -233,11 +350,21 @@ function formatDate(date, includeTime = true) {
     }
 }
 
+/**
+ * Converts a wind speed from kilometers per hour to meters per second.
+ *
+ * @param { number } kph - The wind speed in kilometers per hour.
+ * @returns { string } The wind speed in meters per second.
+ */
 function convertKMHtoMS(kph) {
     const metersPerSecond = (kph / KPH_IN_MPS).toFixed(0);
     return metersPerSecond;
 }
 
+/**
+ * Shows the loading animation and hides the weather card and forecast container.
+ *
+ */
 function showLoadingAnimation() {
     const loadingIndicator = document.getElementById('loadingIndicator');
     const cardContainer = document.getElementById('weatherCardContainer');
@@ -248,6 +375,10 @@ function showLoadingAnimation() {
     loadingIndicator.style.display = 'block';
 }
 
+/**
+ * Hides the loading animation and shows the weather card and forecast container.
+ *
+ */
 function hideLoadingAnimation() {
     const loadingIndicator = document.getElementById('loadingIndicator');
     const cardContainer = document.getElementById('weatherCardContainer');
@@ -258,6 +389,10 @@ function hideLoadingAnimation() {
     loadingIndicator.style.display = 'none';
 }
 
+/**
+ * Handles the error when the location is not found.
+ *
+ */
 function wrongLocationErrorHandler() {
     const searchBox = document.getElementById('searchBox');
     const errorText = document.getElementById('errorText');
@@ -266,6 +401,10 @@ function wrongLocationErrorHandler() {
     errorText.style.visibility = 'visible';
 }
 
+/**
+ * Clears the error values and removes the error styling from the search box.
+ *
+ */
 function clearErrorValuesHandler() {
     const searchBox = document.getElementById('searchBox');
     const errorText = document.getElementById('errorText');
@@ -274,4 +413,5 @@ function clearErrorValuesHandler() {
     errorText.style.visibility = 'hidden';
 }
 
+// Initial call to fetch and display weather data
 getWeatherData();
