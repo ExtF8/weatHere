@@ -388,7 +388,8 @@ function hideLoadingAnimation() {
     const cardContainer = document.getElementById('weatherCardContainer');
     const forecastContainer = document.querySelector('.forecast_container');
 
-    cardContainer.style.display = 'block';
+    cardContainer.style.display = 'flex';
+    cardContainer.style.flexDirection = 'column';
     forecastContainer.style.display = 'flex';
     loadingIndicator.style.display = 'none';
 }
