@@ -12,7 +12,7 @@ const WEATHER_API_KEY = '8c7f3fa8abbc4c0f8df135204240404';
  * @returns { string } The API URL.
  */
 const API_URL = (city) => {
-    return `https://api.weatherapi.com/v1/forecast.json?key=${WEATHER_API_KEY}&q=${city}&days=4`;
+    return `https://api.weatherapi.com/v1/forecast.json?key=${WEATHER_API_KEY}&q=${city}&days=3`;
 };
 
 /**
@@ -198,7 +198,7 @@ function extractValuesForForecast(data) {
     const nextDaysForecastData = [];
     const forecastData = data.forecast.forecastday;
 
-    for (let i = 1; i < forecastData.length; i++) {
+    for (let i = 0; i < forecastData.length; i++) {
         const nextDayTime = new Date(forecastData[i].date);
         const nextDayIcon = forecastData[i].day.condition.icon;
         const nextDayHighTempInCelsius = forecastData[i].day.maxtemp_c;
