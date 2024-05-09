@@ -1,9 +1,19 @@
+import 'dotenv/config';
 /**
  * Weather API key.
- *
- * @type { string }
- */
-const WEATHER_API_KEY = '8c7f3fa8abbc4c0f8df135204240404';
+*
+* @type { string }
+*/
+const WINDY_API_KEY = process.env.WINDY_API_KEY;
+
+const requestBody = {
+    lat: 56.9677,
+    lon: 24.1056,
+    model: 'iconEu',
+    parameters: ['wind', 'dewpoint', 'rh', 'pressure'],
+    levels: ['surface', '800h', '300h'],
+    key: WINDY_API_KEY,
+};
 
 /**
  * Function to generate the API URL based on the city.
@@ -11,8 +21,14 @@ const WEATHER_API_KEY = '8c7f3fa8abbc4c0f8df135204240404';
  * @param { string } city - The city for which to fetch weather data.
  * @returns { string } The API URL.
  */
-const API_URL = (city) => {
-    return `https://api.weatherapi.com/v1/forecast.json?key=${WEATHER_API_KEY}&q=${city}&days=3`;
+const endpointUrl = 'https://api.windy.com/api/point-forecast/v2';
+
+const requestOptions = {
+    method: 'POST',
+    headers: {
+        'Content-type': 'application/json',
+    },
+    body: JSON.stringify(requestBody),
 };
 
 /**
@@ -75,10 +91,11 @@ const KPH_IN_MPS = 3.6;
  * Event listener for the search box change event.
  *
  */
-document.getElementById('searchBox').addEventListener('change', function () {
-    clearErrorValuesHandler();
-    getWeatherData();
-});
+// document.getElementById('searchBox').addEventListener('change', function () {
+//     clearErrorValuesHandler();
+//     getWeatherData();
+// });
+
 
 /**
  * Fetches the weather data from the API.
@@ -87,10 +104,8 @@ document.getElementById('searchBox').addEventListener('change', function () {
  * @returns { Promise<Response> } A Promise that resolves with the API response.
  * @throws { Error } If there is an error fetching the data.
  */
-async function fetchApi(location) {
-    const response = await fetch(API_URL(location), {
-        origin: 'cors',
-    });
+async function fetchApi() {
+    const response = await fetch(endpointUrl, requestOptions);
     return response;
 }
 
@@ -100,31 +115,33 @@ async function fetchApi(location) {
  * @throws {Error} If there is an error fetching the data or if the response is not successful.
  */
 async function getWeatherData() {
-    showLoadingAnimation();
-    let currentLocation = document.getElementById('searchBox').value;
+    // showLoadingAnimation();
+    // let currentLocation = document.getElementById('searchBox').value;
     let response;
 
-    if (currentLocation.length == 0) {
-        currentLocation = DEFAULT_LOCATION;
-    }
+    // if (currentLocation.length == 0) {
+    //     currentLocation = DEFAULT_LOCATION;
+    // }
 
     try {
-        response = await fetchApi(currentLocation);
+        response = await fetchApi();
     } catch (error) {
         console.error('Error fetching weather data: ', error);
     }
 
-    if (!response.ok) {
-        wrongLocationErrorHandler();
-    }
+    // if (!response.ok) {
+    //     wrongLocationErrorHandler();
+    // }
 
     const responseData = await response.json();
+    const temperatureData = responseData['temp-surface']
+    console.log(temperatureData);
 
-    extractValuesForCurrent(responseData);
+    // extractValuesForCurrent(responseData);
 
-    extractValuesForForecast(responseData);
+    // extractValuesForForecast(responseData);
 
-    hideLoadingAnimation();
+    // hideLoadingAnimation();
 }
 
 /**
