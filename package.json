@@ -1,0 +1,15 @@
+{
+    "name": "weathere",
+    "description": "## Introduction This project is part of [The Odin Project](https://www.theodinproject.com/lessons/node-path-javascript-weather-app) and it focuses on creating a weather forecast application that utilizes the WeatherAPI to provide accurate weather information for specified locations.",
+    "version": "1.0.0",
+    "main": "script.js",
+    "type": "module",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "dotenv": "^16.4.5"
+    }
+}
